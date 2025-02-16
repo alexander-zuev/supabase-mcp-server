@@ -1,0 +1,21 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+
+startCommand:
+  type: stdio
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required:
+      - supabaseProjectRef
+      - supabaseDbPassword
+    properties:
+      supabaseProjectRef:
+        type: string
+        description: The project reference for your Supabase instance.
+      supabaseDbPassword:
+        type: string
+        description: The database password for Supabase.
+  commandFunction:
+    # A function that produces the CLI command to start the MCP on stdio.
+    |-
+    (config) => ({ command: 'uv', args: ['--directory', '.', 'run', 'main.py'], env: { SUPABASE_PROJECT_REF: config.supabaseProjectRef, SUPABASE_DB_PASSWORD: config.supabaseDbPassword } })
