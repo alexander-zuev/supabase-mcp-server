@@ -296,7 +296,7 @@ Here are some tips & tricks that might help you:
 - **Debug installation** - run `supabase-mcp-server` directly from the terminal to see if it works. If it doesn't, there might be an issue with the installation.
 - **MCP Server configuration** - if the above step works, it means the server is installed and configured correctly. As long as you provided the right command, IDE should be able to connect. Make sure to provide the right path to the server executable.
 - **Environment variables** - to connect to the right database, make sure you either set env variables in `mcp_config.json` or in `.env` file placed in a global config directory (`~/.config/supabase-mcp/.env` on macOS/Linux or `%APPDATA%\supabase-mcp\.env` on Windows).
-- **Region** - validate that the region you selected matches the region on Supabase
+- **Region** - validate that the region you selected matches the region on Supabase.
 - **Accessing logs** - The MCP server writes detailed logs to a file:
   - Log file location:
     - macOS/Linux: `~/.local/share/supabase-mcp/mcp_server.log`
