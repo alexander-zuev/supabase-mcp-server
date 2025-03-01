@@ -17,11 +17,14 @@ COPY smithery.yaml .
 COPY supabase_mcp/ ./supabase_mcp/
 COPY README.md .
 
+# Upgrade pip
+RUN pip install --upgrade pip
+
 # Install uv package manager
-RUN pip install --no-cache-dir uv
+RUN pip install --no-cache-dir --system uv
 
 # Install project dependencies using uv
-RUN uv pip install --no-cache-dir .
+RUN uv pip install --no-cache-dir --system .
 
 # Set environment variables (these will be overridden by Smithery.ai config)
 ENV SUPABASE_PROJECT_REF=""
