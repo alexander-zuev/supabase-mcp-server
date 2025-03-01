@@ -17,14 +17,15 @@ COPY smithery.yaml .
 COPY supabase_mcp/ ./supabase_mcp/
 COPY README.md .
 
-# Upgrade pip
-RUN pipx install --upgrade pip
+# Upgrade pip and install pipx
+RUN pip install --upgrade pip
+RUN pip install pipx
 
 # Install uv package manager
 RUN pipx install --no-cache-dir uv
 
 # Install project dependencies using uv
-RUN uv pipx install --no-cache-dir .
+RUN uv pip install --no-cache-dir .
 
 # Set environment variables (these will be overridden by Smithery.ai config)
 ENV SUPABASE_PROJECT_REF=""
