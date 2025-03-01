@@ -4,7 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "supabase-mcp-server"
-dynamic = ["version"]
+version = "0.1.0"
+# dynamic = ["version"]
 description = "Unofficial Supabase MCP server that enables Cursor and Windsurf to manage your database and execute SQL queries"
 readme = "README.md"
 requires-python = ">=3.12"
