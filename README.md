@@ -118,6 +118,7 @@ After installing the package, you'll need to configure your database connection 
  Server is pre-configured to connect to the local Supabase instance using default settings:
 - `Host`: 127.0.0.1:54322
 - `Password`: postgres
+- `API url`: http://127.0.0.1:54321
 
 >💡 As long as you didn't modify the default settings and you want to connect to the local instance, you don't need to set environment variables.
 
@@ -130,6 +131,7 @@ For remote Supabase projects, you need to configure:
 - `SUPABASE_DB_PASSWORD` - Your database password
 - `SUPABASE_REGION` - (Optional) Defaults to `us-east-1`
 - `SUPABASE_ACCESS_TOKEN` - (Optional) For Management API access
+- `SUPABASE_SERVICE_ROLE_KEY` - (Optional) For Auth Admin Python SDK access
 
 You can get your SUPABASE_PROJECT_REF from your project's dashboard URL:
 - `https://supabase.com/dashboard/project/<supabase-project-ref>`
@@ -204,6 +206,7 @@ SUPABASE_PROJECT_REF=your-project-ref
 SUPABASE_DB_PASSWORD=your-db-password
 SUPABASE_REGION=us-east-1  # optional, defaults to us-east-1
 SUPABASE_ACCESS_TOKEN=your-access-token  # optional, for management API
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key  # optional, for Auth Admin Python SDK
 ```
 
 Verify the file exists - you should see the values you have just set:
@@ -231,7 +234,8 @@ Windsurf supports de facto standard .json format for MCP Servers configuration. 
           "SUPABASE_PROJECT_REF": "your-project-ref",
           "SUPABASE_DB_PASSWORD": "your-db-password",
           "SUPABASE_REGION": "us-east-1",  // optional, defaults to us-east-1
-          "SUPABASE_ACCESS_TOKEN": "your-access-token"  // optional, for management API
+          "SUPABASE_ACCESS_TOKEN": "your-access-token",  // optional, for management API
+          "SUPABASE_SERVICE_ROLE_KEY": "your-service-role-key"  // optional, for Auth Admin Python SDK
         }
       }
     }
@@ -280,7 +284,8 @@ Go to Cascade -> Click on the hammer icon -> Configure -> Fill in the configurat
           "SUPABASE_PROJECT_REF": "your-project-ref",
           "SUPABASE_DB_PASSWORD": "your-db-password",
           "SUPABASE_REGION": "us-east-1",  // optional, defaults to us-east-1
-          "SUPABASE_ACCESS_TOKEN": "your-access-token"  // optional, for management API
+          "SUPABASE_ACCESS_TOKEN": "your-access-token",  // optional, for management API
+          "SUPABASE_SERVICE_ROLE_KEY": "your-service-role-key"  // optional, for Auth Admin Python SDK
         }
       }
     }
