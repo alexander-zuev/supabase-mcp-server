@@ -1,8 +1,10 @@
-FROM python:3.12-slim-bookworm as builder
+FROM python:3.13-slim-bookworm as builder
 
 FROM python:3.13-slim
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+ENV SETUPTOOLS_SCM_PRETEND_VERSION_FOR_SUPABASE_MCP_SERVER=8.2.0
 
 
 # Set working directory
