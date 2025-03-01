@@ -1,5 +1,9 @@
-# Use Python 3.12 as base image
-FROM python:3.12-slim
+FROM python:3.12-slim-bookworm as builder
+
+FROM python:3.13-slim
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
 
 # Set working directory
 WORKDIR /app
@@ -21,14 +25,11 @@ COPY README.md .
 RUN pip install --upgrade pip
 RUN pip install pipx
 
-# Install uv via pipx
-RUN pipx install uv
-
 # Add pipx binary directory to PATH
 ENV PATH="/root/.local/bin:$PATH"
 
 # Install project dependencies using uv
-RUN uv pip install --no-cache-dir .
+RUN uv pip install --no-cache-dir --system .
 
 # Set environment variables (these will be overridden by Smithery.ai config)
 ENV SUPABASE_PROJECT_REF=""
