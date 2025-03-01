@@ -229,12 +229,10 @@ Examples:
 2. Create user:
    method: "create_user"
    params: {
-     "attributes": {
-       "email": "user@example.com",
-       "password": "secure-password",
-       "email_confirm": true,
-       "user_metadata": {"name": "John Doe"}
-     }
+     "email": "user@example.com",
+     "password": "secure-password",
+     "email_confirm": true,
+     "user_metadata": {"name": "John Doe"}
    }
 
 3. Generate link:
