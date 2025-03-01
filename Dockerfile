@@ -22,7 +22,7 @@ RUN pip install --upgrade pip
 RUN pip install pipx
 
 # Install uv package manager
-RUN pipx install --no-cache-dir uv
+RUN pipx install uv
 
 # Install project dependencies using uv
 RUN uv pip install --no-cache-dir .
