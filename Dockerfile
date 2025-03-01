@@ -21,8 +21,11 @@ COPY README.md .
 RUN pip install --upgrade pip
 RUN pip install pipx
 
-# Install uv package manager
+# Install uv via pipx
 RUN pipx install uv
+
+# Add pipx binary directory to PATH
+ENV PATH="/root/.local/bin:$PATH"
 
 # Install project dependencies using uv
 RUN uv pip install --no-cache-dir .
