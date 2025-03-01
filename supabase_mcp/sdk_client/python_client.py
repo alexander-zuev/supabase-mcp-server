@@ -43,6 +43,8 @@ class SupabaseSDKClient:
 
     def get_supabase_url(self) -> str:
         """Returns the Supabase URL based on the project reference"""
+        if self.project_ref.startswith("127.0.0.1"):
+            return "http://127.0.0.1:54321"
         return f"https://{self.project_ref}.supabase.co"
 
     @classmethod
