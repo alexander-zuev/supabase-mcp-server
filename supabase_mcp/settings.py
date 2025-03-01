@@ -71,7 +71,7 @@ class Settings(BaseSettings):
         alias="SUPABASE_DB_PASSWORD",
     )
     supabase_region: str = Field(
-        default="us-east-1",  # East US (North Virginia) - Supabase's default region
+        default="eu-central-1",  # West EU (Ireland) - Supabase's default region
         description="Supabase region for connection",
         alias="SUPABASE_REGION",
     )
