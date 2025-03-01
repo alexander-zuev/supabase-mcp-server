@@ -44,7 +44,7 @@ ENV SUPABASE_REGION="us-east-1"
 # This MCP server communicates via stdin/stdout according to smithery.yaml
 
 # Set the entrypoint to the command that Smithery expects
-ENTRYPOINT ["uv", "run", "main.py"]
+ENTRYPOINT ["uv", "run", "supabase_mcp/main.py"]
 
 # Default command if no arguments are provided
 CMD ["--help"]
