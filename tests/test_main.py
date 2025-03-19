@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import pytest
 
-from supabase_mcp.core.container import Container
+from supabase_mcp.core.container import ServicesContainer
 from supabase_mcp.logger import logger
 from supabase_mcp.main import run_inspector, run_server
 from supabase_mcp.services.safety.models import ClientType
@@ -17,7 +17,7 @@ class TestMain:
     """Tests for the main application functionality."""
 
     @pytest.mark.unit
-    def test_mcp_server_initializes(self, container_integration: Container):
+    def test_mcp_server_initializes(self, container_integration: ServicesContainer):
         """Test that the MCP server initializes correctly."""
         # Verify server name
         mcp = container_integration.mcp_server
@@ -33,7 +33,7 @@ class TestMain:
     @pytest.mark.unit
     def test_services_container_initialization(
         self,
-        initialized_container_integration: Container,
+        initialized_container_integration: ServicesContainer,
     ):
         """Test that the services container is correctly initialized."""
         # Verify container has all required services
@@ -53,7 +53,7 @@ class TestMain:
         assert safety_manager.get_safety_mode(ClientType.API) is not None
 
     @pytest.mark.unit
-    def test_tool_registration(self, tools_registry_integration: Container):
+    def test_tool_registration(self, tools_registry_integration: ServicesContainer):
         """Test that tools are registered correctly using ToolManager's tool names."""
 
         # Get the tool manager from the container

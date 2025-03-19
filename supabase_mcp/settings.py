@@ -87,6 +87,23 @@ class Settings(BaseSettings):
         alias="SUPABASE_SERVICE_ROLE_KEY",
     )
 
+    supabase_api_url: str = Field(
+        default="https://api.supabase.com",
+        description="Supabase API URL",
+    )
+
+    query_api_key: str = Field(
+        default="test-key",
+        description="TheQuery.dev API key",
+        alias="QUERY_API_KEY",
+    )
+
+    query_api_url: str = Field(
+        default="https://api.thequery.dev/v1",
+        description="TheQuery.dev API URL",
+        alias="QUERY_API_URL",
+    )
+
     @field_validator("supabase_region")
     @classmethod
     def validate_region(cls, v: str, info: ValidationInfo) -> str:

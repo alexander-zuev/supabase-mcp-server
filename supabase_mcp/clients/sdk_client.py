@@ -104,6 +104,11 @@ class SupabaseSDKClient:
             logger.info(f"Created Supabase SDK client for project {self.project_ref}")
         return self.client
 
+    async def close(self) -> None:
+        """Reset the client reference to allow garbage collection."""
+        self.client = None
+        logger.info("Supabase SDK client reference cleared")
+
     def return_python_sdk_spec(self) -> dict:
         """Returns the Python SDK spec"""
         return get_auth_admin_methods_spec()

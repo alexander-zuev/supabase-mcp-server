@@ -2,14 +2,14 @@ from typing import Any, cast
 
 from mcp.server.fastmcp import FastMCP
 
-from supabase_mcp.core.container import Container
+from supabase_mcp.core.container import ServicesContainer
 from supabase_mcp.settings import Settings
 
 
 class TestContainer:
     """Tests for the Container class functionality."""
 
-    def test_container_initialization(self, container_integration: Container):
+    def test_container_initialization(self, container_integration: ServicesContainer):
         """Test that the container is properly initialized with all services."""
         # Verify all services are properly initialized
         assert container_integration.postgres_client is not None
@@ -24,10 +24,10 @@ class TestContainer:
     def test_container_initialize_method(self, settings_integration: Settings, mock_mcp_server: Any):
         """Test the initialize method creates all services properly."""
         # Create empty container
-        container = Container(mcp_server=cast(FastMCP, mock_mcp_server))
+        container = ServicesContainer(mcp_server=cast(FastMCP, mock_mcp_server))
 
         # Initialize with settings
-        container.initialize(settings_integration)
+        container.initialize_services(settings_integration)
 
         # Verify all services were created
         assert container.postgres_client is not None

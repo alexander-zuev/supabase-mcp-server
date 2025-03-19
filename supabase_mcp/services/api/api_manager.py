@@ -3,8 +3,8 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any
 
+from supabase_mcp.clients.management_client import ManagementAPIClient
 from supabase_mcp.logger import logger
-from supabase_mcp.services.api.api_client import ManagementAPIClient
 from supabase_mcp.services.api.spec_manager import ApiSpecManager
 from supabase_mcp.services.logs.log_manager import LogManager
 from supabase_mcp.services.safety.models import ClientType

@@ -17,8 +17,6 @@ from supabase_mcp.exceptions import (
 from supabase_mcp.logger import logger
 from supabase_mcp.settings import Settings
 
-SUPABASE_API_URL = "https://api.supabase.com"
-
 
 # Helper function for retry decorator to safely log exceptions
 def log_retry_attempt(retry_state: RetryCallState) -> None:
@@ -50,7 +48,7 @@ class ManagementAPIClient:
         }
 
         return httpx.AsyncClient(
-            base_url=SUPABASE_API_URL,
+            base_url=settings.supabase_api_url,
             headers=headers,
             timeout=30.0,
         )

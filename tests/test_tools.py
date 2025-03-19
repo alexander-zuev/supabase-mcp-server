@@ -3,7 +3,7 @@ import uuid
 import pytest
 from mcp.server.fastmcp import FastMCP
 
-from supabase_mcp.core.container import Container
+from supabase_mcp.core.container import ServicesContainer
 from supabase_mcp.exceptions import ConfirmationRequiredError, OperationNotAllowedError
 from supabase_mcp.services.database.postgres_client import QueryResult
 from supabase_mcp.services.safety.models import ClientType, OperationRiskLevel, SafetyMode
@@ -16,7 +16,7 @@ class TestDatabaseTools:
 
     async def test_get_schemas_tool(
         self,
-        initialized_container_integration: Container,
+        initialized_container_integration: ServicesContainer,
         mock_mcp_server_integration: FastMCP,
     ):
         """Test the get_schemas tool."""
@@ -38,7 +38,7 @@ class TestDatabaseTools:
         assert "total_size" in first_row
         assert "table_count" in first_row
 
-    async def test_get_tables_tool(self, initialized_container_integration: Container):
+    async def test_get_tables_tool(self, initialized_container_integration: ServicesContainer):
         """Test the get_tables tool retrieves table information from a schema."""
         query_manager = initialized_container_integration.query_manager
 
@@ -61,7 +61,7 @@ class TestDatabaseTools:
             for field in expected_fields:
                 assert field in first_table, f"Table result missing '{field}' field"
 
-    async def test_get_table_schema_tool(self, initialized_container_integration: Container):
+    async def test_get_table_schema_tool(self, initialized_container_integration: ServicesContainer):
         """Test the get_table_schema tool retrieves column information for a table."""
         query_manager = initialized_container_integration.query_manager
         query = query_manager.get_tables_query("public")
@@ -90,7 +90,7 @@ class TestDatabaseTools:
             for field in expected_fields:
                 assert field in first_column, f"Column result missing '{field}' field"
 
-    async def test_execute_postgresql_safe_query(self, initialized_container_integration: Container):
+    async def test_execute_postgresql_safe_query(self, initialized_container_integration: ServicesContainer):
         """Test the execute_postgresql tool runs safe SQL queries."""
         query_manager = initialized_container_integration.query_manager
         # Test a simple SELECT query
@@ -100,7 +100,7 @@ class TestDatabaseTools:
         assert isinstance(result, QueryResult), "Result should be a QueryResult"
         assert hasattr(result, "results"), "Result should have results attribute"
 
-    async def test_execute_postgresql_unsafe_query(self, initialized_container_integration: Container):
+    async def test_execute_postgresql_unsafe_query(self, initialized_container_integration: ServicesContainer):
         """Test the execute_postgresql tool handles unsafe queries properly."""
         query_manager = initialized_container_integration.query_manager
         safety_manager = initialized_container_integration.safety_manager
@@ -127,7 +127,7 @@ class TestDatabaseTools:
         # Switch back to safe mode for other tests
         safety_manager.set_safety_mode(ClientType.DATABASE, SafetyMode.SAFE)
 
-    async def test_retrieve_migrations(self, initialized_container_integration: Container):
+    async def test_retrieve_migrations(self, initialized_container_integration: ServicesContainer):
         """Test the retrieve_migrations tool retrieves migration information with various parameters."""
         # Get the query manager
         query_manager = initialized_container_integration.query_manager
@@ -204,7 +204,7 @@ class TestDatabaseTools:
             for row in combined_result.results[0].rows:
                 assert "statements" in row, "Statements field should be present"
 
-    async def test_execute_postgresql_medium_risk_safe_mode(self, initialized_container_integration: Container):
+    async def test_execute_postgresql_medium_risk_safe_mode(self, initialized_container_integration: ServicesContainer):
         """Test that MEDIUM risk operations (INSERT, UPDATE, DELETE) are not allowed in SAFE mode."""
         # Ensure we're in SAFE mode
         query_manager = initialized_container_integration.query_manager
@@ -220,7 +220,9 @@ class TestDatabaseTools:
         with pytest.raises(OperationNotAllowedError):
             await query_manager.handle_query(medium_risk_query)
 
-    async def test_execute_postgresql_medium_risk_unsafe_mode(self, initialized_container_integration: Container):
+    async def test_execute_postgresql_medium_risk_unsafe_mode(
+        self, initialized_container_integration: ServicesContainer
+    ):
         """Test that MEDIUM risk operations (INSERT, UPDATE, DELETE) are allowed in UNSAFE mode without confirmation."""
         query_manager = initialized_container_integration.query_manager
         postgres_client = initialized_container_integration.postgres_client
@@ -320,7 +322,7 @@ class TestDatabaseTools:
             # Reset safety mode
             safety_manager.set_safety_mode(ClientType.DATABASE, SafetyMode.SAFE)
 
-    async def test_execute_postgresql_high_risk_safe_mode(self, initialized_container_integration: Container):
+    async def test_execute_postgresql_high_risk_safe_mode(self, initialized_container_integration: ServicesContainer):
         """Test that HIGH risk operations (DROP, TRUNCATE) are not allowed in SAFE mode."""
         # Ensure we're in SAFE mode
         query_manager = initialized_container_integration.query_manager
@@ -336,7 +338,7 @@ class TestDatabaseTools:
         with pytest.raises(OperationNotAllowedError):
             await query_manager.handle_query(high_risk_query)
 
-    async def test_execute_postgresql_high_risk_unsafe_mode(self, initialized_container_integration: Container):
+    async def test_execute_postgresql_high_risk_unsafe_mode(self, initialized_container_integration: ServicesContainer):
         """Test that HIGH risk operations (DROP, TRUNCATE) require confirmation even in UNSAFE mode."""
         query_manager = initialized_container_integration.query_manager
         safety_manager = initialized_container_integration.safety_manager
@@ -356,7 +358,7 @@ class TestDatabaseTools:
             # Switch back to SAFE mode for other tests
             safety_manager.set_safety_mode(ClientType.DATABASE, SafetyMode.SAFE)
 
-    async def test_execute_postgresql_safety_mode_switching(self, initialized_container_integration: Container):
+    async def test_execute_postgresql_safety_mode_switching(self, initialized_container_integration: ServicesContainer):
         """Test that switching between SAFE and UNSAFE modes affects which operations are allowed."""
         # Start in SAFE mode
         query_manager = initialized_container_integration.query_manager
@@ -410,7 +412,7 @@ class TestAPITools:
     """Integration tests for API tools."""
 
     # @pytest.mark.asyncio
-    async def test_send_management_api_request_get(self, initialized_container_integration: Container):
+    async def test_send_management_api_request_get(self, initialized_container_integration: ServicesContainer):
         """Test the send_management_api_request tool with a GET request."""
         # Test a simple GET request to list services health
         api_manager = initialized_container_integration.api_manager
@@ -435,7 +437,7 @@ class TestAPITools:
 
     # @pytest.mark.asyncio
     async def test_send_management_api_request_medium_risk_safe_mode(
-        self, initialized_container_integration: Container
+        self, initialized_container_integration: ServicesContainer
     ):
         """Test that MEDIUM risk operations (POST, PATCH) are not allowed in SAFE mode."""
         # Ensure we're in SAFE mode
@@ -454,7 +456,7 @@ class TestAPITools:
             )
 
     async def test_send_management_api_request_medium_risk_unsafe_mode(
-        self, initialized_container_integration: Container
+        self, initialized_container_integration: ServicesContainer
     ):
         """Test that MEDIUM risk operations (POST, PATCH) are allowed in UNSAFE mode."""
         import uuid
@@ -562,7 +564,7 @@ class TestAPITools:
             safety_manager.set_safety_mode(ClientType.API, SafetyMode.SAFE)
 
     # @pytest.mark.asyncio
-    async def test_send_management_api_request_high_risk(self, initialized_container_integration: Container):
+    async def test_send_management_api_request_high_risk(self, initialized_container_integration: ServicesContainer):
         """Test that HIGH risk operations (DELETE) require confirmation even in UNSAFE mode."""
         # Switch to UNSAFE mode
         api_manager = initialized_container_integration.api_manager
@@ -584,7 +586,7 @@ class TestAPITools:
             safety_manager.set_safety_mode(ClientType.API, SafetyMode.SAFE)
 
     # @pytest.mark.asyncio
-    async def test_send_management_api_request_extreme_risk(self, initialized_container_integration: Container):
+    async def test_send_management_api_request_extreme_risk(self, initialized_container_integration: ServicesContainer):
         """Test that EXTREME risk operations (DELETE project) are never allowed."""
         # Switch to UNSAFE mode
         api_manager = initialized_container_integration.api_manager
@@ -602,7 +604,7 @@ class TestAPITools:
             safety_manager.set_safety_mode(ClientType.API, SafetyMode.SAFE)
 
     # @pytest.mark.asyncio
-    async def test_get_management_api_spec(self, initialized_container_integration: Container):
+    async def test_get_management_api_spec(self, initialized_container_integration: ServicesContainer):
         """Test the get_management_api_spec tool returns valid API specifications."""
         # Test getting API specifications
         api_manager = initialized_container_integration.api_manager
@@ -636,7 +638,7 @@ class TestAPITools:
 class TestSafetyTools:
     """Integration tests for safety tools."""
 
-    async def test_live_dangerously_database(self, initialized_container_integration: Container):
+    async def test_live_dangerously_database(self, initialized_container_integration: ServicesContainer):
         """Test the live_dangerously tool toggles database safety mode."""
         # Get the safety manager
         safety_manager = initialized_container_integration.safety_manager
@@ -656,7 +658,7 @@ class TestSafetyTools:
         assert safety_manager.get_safety_mode(ClientType.DATABASE) == SafetyMode.SAFE, "Database should be in safe mode"
 
     # @pytest.mark.asyncio
-    async def test_live_dangerously_api(self, initialized_container_integration: Container):
+    async def test_live_dangerously_api(self, initialized_container_integration: ServicesContainer):
         """Test the live_dangerously tool toggles API safety mode."""
         # Get the safety manager
         safety_manager = initialized_container_integration.safety_manager
@@ -674,7 +676,7 @@ class TestSafetyTools:
         assert safety_manager.get_safety_mode(ClientType.API) == SafetyMode.SAFE, "API should be in safe mode"
 
     # @pytest.mark.asyncio
-    async def test_confirm_destructive_operation(self, initialized_container_integration: Container):
+    async def test_confirm_destructive_operation(self, initialized_container_integration: ServicesContainer):
         """Test the confirm_destructive_operation tool handles confirmations."""
         api_manager = initialized_container_integration.api_manager
         safety_manager = initialized_container_integration.safety_manager
@@ -711,7 +713,7 @@ class TestSafetyTools:
 class TestAuthTools:
     """Integration tests for Auth Admin tools."""
 
-    async def test_get_auth_admin_methods_spec(self, initialized_container_integration: Container):
+    async def test_get_auth_admin_methods_spec(self, initialized_container_integration: ServicesContainer):
         """Test the get_auth_admin_methods_spec tool returns SDK method specifications."""
         # Test getting auth admin methods spec
         sdk_client = initialized_container_integration.sdk_client
@@ -729,7 +731,7 @@ class TestAuthTools:
             assert "parameters" in result[method], f"{method} should have parameters"
             assert "returns" in result[method], f"{method} should have returns info"
 
-    async def test_call_auth_admin_list_users(self, initialized_container_integration: Container):
+    async def test_call_auth_admin_list_users(self, initialized_container_integration: ServicesContainer):
         """Test the call_auth_admin_method tool with list_users method."""
         # Test listing users with pagination
         sdk_client = initialized_container_integration.sdk_client
@@ -745,7 +747,7 @@ class TestAuthTools:
             assert hasattr(user, "email"), "User should have an email"
 
     # @pytest.mark.asyncio
-    async def test_call_auth_admin_create_user(self, initialized_container_integration: Container):
+    async def test_call_auth_admin_create_user(self, initialized_container_integration: ServicesContainer):
         """Test creating a user with the create_user method."""
         # Create a unique email for this test
         test_email = f"test-user-{uuid.uuid4()}@example.com"
@@ -780,7 +782,7 @@ class TestAuthTools:
                     print(f"Failed to delete test user: {e}")
 
     # @pytest.mark.asyncio
-    async def test_call_auth_admin_get_user(self, initialized_container_integration: Container):
+    async def test_call_auth_admin_get_user(self, initialized_container_integration: ServicesContainer):
         """Test retrieving a user with the get_user_by_id method."""
         # Create a unique email for this test
         test_email = f"get-user-{uuid.uuid4()}@example.com"
@@ -816,7 +818,7 @@ class TestAuthTools:
                     print(f"Failed to delete test user: {e}")
 
     # @pytest.mark.asyncio
-    async def test_call_auth_admin_update_user(self, initialized_container_integration: Container):
+    async def test_call_auth_admin_update_user(self, initialized_container_integration: ServicesContainer):
         """Test updating a user with the update_user_by_id method."""
         # Create a unique email for this test
         test_email = f"update-user-{uuid.uuid4()}@example.com"
@@ -864,7 +866,7 @@ class TestAuthTools:
                     print(f"Failed to delete test user: {e}")
 
     # @pytest.mark.asyncio
-    async def test_call_auth_admin_invite_user(self, initialized_container_integration: Container):
+    async def test_call_auth_admin_invite_user(self, initialized_container_integration: ServicesContainer):
         """Test the invite_user_by_email method."""
         # Create a unique email for this test
         test_email = f"invite-{uuid.uuid4()}@example.com"
@@ -895,7 +897,7 @@ class TestAuthTools:
                     print(f"Failed to delete invited test user: {e}")
 
     # @pytest.mark.asyncio
-    async def test_call_auth_admin_generate_signup_link(self, initialized_container_integration: Container):
+    async def test_call_auth_admin_generate_signup_link(self, initialized_container_integration: ServicesContainer):
         """Test generating a signup link with the generate_link method."""
         # Create a unique email for this test
         test_email = f"signup-{uuid.uuid4()}@example.com"
@@ -923,7 +925,7 @@ class TestAuthTools:
         assert "signup" in signup_result.properties.verification_type, "Verification type should be signup"
 
     # @pytest.mark.asyncio
-    async def test_call_auth_admin_invalid_method(self, initialized_container_integration: Container):
+    async def test_call_auth_admin_invalid_method(self, initialized_container_integration: ServicesContainer):
         """Test that an invalid method raises an exception."""
         # Test with an invalid method name
         sdk_client = initialized_container_integration.sdk_client
@@ -947,7 +949,7 @@ class TestLogsAndAnalyticsTools:
     """Integration tests for Logs and Analytics tools."""
 
     # Collection tests - one test per collection
-    async def test_postgres_logs_collection(self, initialized_container_integration: Container):
+    async def test_postgres_logs_collection(self, initialized_container_integration: ServicesContainer):
         """Test retrieving logs from the postgres collection."""
         api_manager = initialized_container_integration.api_manager
 
@@ -963,7 +965,7 @@ class TestLogsAndAnalyticsTools:
             assert "timestamp" in first_log, "Log entry should have a timestamp"
             assert "event_message" in first_log, "Log entry should have an event message"
 
-    async def test_api_gateway_logs_collection(self, initialized_container_integration: Container):
+    async def test_api_gateway_logs_collection(self, initialized_container_integration: ServicesContainer):
         """Test retrieving logs from the api_gateway collection."""
         api_manager = initialized_container_integration.api_manager
 
@@ -977,7 +979,7 @@ class TestLogsAndAnalyticsTools:
             assert "timestamp" in first_log, "Log entry should have a timestamp"
             assert "event_message" in first_log, "Log entry should have an event message"
 
-    async def test_auth_logs_collection(self, initialized_container_integration: Container):
+    async def test_auth_logs_collection(self, initialized_container_integration: ServicesContainer):
         """Test retrieving logs from the auth collection."""
         api_manager = initialized_container_integration.api_manager
 
@@ -991,7 +993,7 @@ class TestLogsAndAnalyticsTools:
             assert "timestamp" in first_log, "Log entry should have a timestamp"
             assert "event_message" in first_log, "Log entry should have an event message"
 
-    async def test_postgrest_logs_collection(self, initialized_container_integration: Container):
+    async def test_postgrest_logs_collection(self, initialized_container_integration: ServicesContainer):
         """Test retrieving logs from the postgrest collection."""
         api_manager = initialized_container_integration.api_manager
 
@@ -1005,7 +1007,7 @@ class TestLogsAndAnalyticsTools:
             assert "timestamp" in first_log, "Log entry should have a timestamp"
             assert "event_message" in first_log, "Log entry should have an event message"
 
-    async def test_pooler_logs_collection(self, initialized_container_integration: Container):
+    async def test_pooler_logs_collection(self, initialized_container_integration: ServicesContainer):
         """Test retrieving logs from the pooler collection."""
         api_manager = initialized_container_integration.api_manager
 
@@ -1019,7 +1021,7 @@ class TestLogsAndAnalyticsTools:
             assert "timestamp" in first_log, "Log entry should have a timestamp"
             assert "event_message" in first_log, "Log entry should have an event message"
 
-    async def test_storage_logs_collection(self, initialized_container_integration: Container):
+    async def test_storage_logs_collection(self, initialized_container_integration: ServicesContainer):
         """Test retrieving logs from the storage collection."""
         api_manager = initialized_container_integration.api_manager
 
@@ -1033,7 +1035,7 @@ class TestLogsAndAnalyticsTools:
             assert "timestamp" in first_log, "Log entry should have a timestamp"
             assert "event_message" in first_log, "Log entry should have an event message"
 
-    async def test_realtime_logs_collection(self, initialized_container_integration: Container):
+    async def test_realtime_logs_collection(self, initialized_container_integration: ServicesContainer):
         """Test retrieving logs from the realtime collection."""
         api_manager = initialized_container_integration.api_manager
 
@@ -1047,7 +1049,7 @@ class TestLogsAndAnalyticsTools:
             assert "timestamp" in first_log, "Log entry should have a timestamp"
             assert "event_message" in first_log, "Log entry should have an event message"
 
-    async def test_edge_functions_logs_collection(self, initialized_container_integration: Container):
+    async def test_edge_functions_logs_collection(self, initialized_container_integration: ServicesContainer):
         """Test retrieving logs from the edge_functions collection."""
         api_manager = initialized_container_integration.api_manager
 
@@ -1061,7 +1063,7 @@ class TestLogsAndAnalyticsTools:
             assert "timestamp" in first_log, "Log entry should have a timestamp"
             assert "event_message" in first_log, "Log entry should have an event message"
 
-    async def test_cron_logs_collection(self, initialized_container_integration: Container):
+    async def test_cron_logs_collection(self, initialized_container_integration: ServicesContainer):
         """Test retrieving logs from the cron collection."""
         api_manager = initialized_container_integration.api_manager
 
@@ -1075,7 +1077,7 @@ class TestLogsAndAnalyticsTools:
             assert "timestamp" in first_log, "Log entry should have a timestamp"
             assert "event_message" in first_log, "Log entry should have an event message"
 
-    async def test_pgbouncer_logs_collection(self, initialized_container_integration: Container):
+    async def test_pgbouncer_logs_collection(self, initialized_container_integration: ServicesContainer):
         """Test retrieving logs from the pgbouncer collection."""
         api_manager = initialized_container_integration.api_manager
 
@@ -1090,7 +1092,7 @@ class TestLogsAndAnalyticsTools:
             assert "event_message" in first_log, "Log entry should have an event message"
 
     # Filtering tests
-    async def test_filtering_by_hours_ago(self, initialized_container_integration: Container):
+    async def test_filtering_by_hours_ago(self, initialized_container_integration: ServicesContainer):
         """Test filtering logs by hours_ago parameter."""
         api_manager = initialized_container_integration.api_manager
 
@@ -1106,7 +1108,7 @@ class TestLogsAndAnalyticsTools:
         assert "result" in result_24h, "Result should contain 'result' key"
         assert "result" in result_1h, "Result should contain 'result' key"
 
-    async def test_filtering_by_search_term(self, initialized_container_integration: Container):
+    async def test_filtering_by_search_term(self, initialized_container_integration: ServicesContainer):
         """Test filtering logs by search term."""
         api_manager = initialized_container_integration.api_manager
 
@@ -1129,7 +1131,7 @@ class TestLogsAndAnalyticsTools:
             # and might use more complex matching than simple string contains
             # assert search_found, "At least one log should contain the search term"
 
-    async def test_filtering_by_custom_filters(self, initialized_container_integration: Container):
+    async def test_filtering_by_custom_filters(self, initialized_container_integration: ServicesContainer):
         """Test filtering logs by custom filters."""
         api_manager = initialized_container_integration.api_manager
 
@@ -1148,7 +1150,7 @@ class TestLogsAndAnalyticsTools:
         # in the test environment
 
     # Custom query tests
-    async def test_custom_query_basic(self, initialized_container_integration: Container):
+    async def test_custom_query_basic(self, initialized_container_integration: ServicesContainer):
         """Test using a custom query for log retrieval."""
         api_manager = initialized_container_integration.api_manager
 
@@ -1165,7 +1167,7 @@ class TestLogsAndAnalyticsTools:
             assert "timestamp" in first_log, "Log entry should have a timestamp"
             assert "event_message" in first_log, "Log entry should have an event message"
 
-    async def test_custom_query_with_complex_joins(self, initialized_container_integration: Container):
+    async def test_custom_query_with_complex_joins(self, initialized_container_integration: ServicesContainer):
         """Test using a custom query with complex joins for log retrieval."""
         api_manager = initialized_container_integration.api_manager
 
@@ -1190,7 +1192,7 @@ class TestLogsAndAnalyticsTools:
         # actual data in the logs
 
     # Error handling tests
-    async def test_invalid_collection_name(self, initialized_container_integration: Container):
+    async def test_invalid_collection_name(self, initialized_container_integration: ServicesContainer):
         """Test that an invalid collection name raises an appropriate error."""
         api_manager = initialized_container_integration.api_manager
 
@@ -1203,7 +1205,7 @@ class TestLogsAndAnalyticsTools:
             "Error message should mention the invalid collection or table"
         )
 
-    async def test_invalid_custom_query(self, initialized_container_integration: Container):
+    async def test_invalid_custom_query(self, initialized_container_integration: ServicesContainer):
         """Test that an invalid custom query returns an appropriate error message."""
         api_manager = initialized_container_integration.api_manager
 
@@ -1216,7 +1218,7 @@ class TestLogsAndAnalyticsTools:
         # The error message might vary, but it should indicate an issue with the query
         assert result["result"] is None, "Result data should be None for invalid query"
 
-    async def test_special_characters_in_search(self, initialized_container_integration: Container):
+    async def test_special_characters_in_search(self, initialized_container_integration: ServicesContainer):
         """Test handling of special characters in search terms."""
         api_manager = initialized_container_integration.api_manager
 

@@ -4,8 +4,8 @@ from datetime import datetime
 
 import pytest
 
+from supabase_mcp.clients.sdk_client import SupabaseSDKClient
 from supabase_mcp.exceptions import PythonSDKError
-from supabase_mcp.services.sdk.sdk_client import SupabaseSDKClient
 
 # Unique identifier for test users to avoid conflicts
 TEST_ID = f"test-{int(time.time())}-{uuid.uuid4().hex[:6]}"

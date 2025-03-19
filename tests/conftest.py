@@ -9,9 +9,10 @@ import pytest_asyncio
 from dotenv import load_dotenv
 from mcp.server.fastmcp import FastMCP
 
-from supabase_mcp.core.container import Container
+from supabase_mcp.clients.management_client import ManagementAPIClient
+from supabase_mcp.clients.sdk_client import SupabaseSDKClient
+from supabase_mcp.core.container import ServicesContainer
 from supabase_mcp.logger import logger
-from supabase_mcp.services.api.api_client import ManagementAPIClient
 from supabase_mcp.services.api.api_manager import SupabaseApiManager
 from supabase_mcp.services.api.spec_manager import ApiSpecManager
 from supabase_mcp.services.database.migration_manager import MigrationManager
@@ -20,7 +21,6 @@ from supabase_mcp.services.database.query_manager import QueryManager
 from supabase_mcp.services.database.sql.loader import SQLLoader
 from supabase_mcp.services.database.sql.validator import SQLValidator
 from supabase_mcp.services.safety.safety_manager import SafetyManager
-from supabase_mcp.services.sdk.sdk_client import SupabaseSDKClient
 from supabase_mcp.settings import Settings, find_config_file
 from supabase_mcp.tools import ToolManager
 from supabase_mcp.tools.registry import ToolRegistry
@@ -298,14 +298,14 @@ def container_integration(
     query_manager_integration: QueryManager,
     tool_manager_integration: ToolManager,
     mock_mcp_server_integration: FastMCP,
-) -> Container:
+) -> ServicesContainer:
     """Fixture providing a basic Container for integration tests.
 
     This container includes all services needed for integration testing,
     but is not initialized.
     """
     # Create a new container with all the services
-    container = Container(
+    container = ServicesContainer(
         mcp_server=mock_mcp_server_integration,
         postgres_client=postgres_client_integration,
         api_client=api_client_integration,
@@ -323,14 +323,14 @@ def container_integration(
 
 @pytest.fixture(scope="module")
 def initialized_container_integration(
-    container_integration: Container,
+    container_integration: ServicesContainer,
     settings_integration: Settings,
-) -> Container:
+) -> ServicesContainer:
     """Fixture providing a fully initialized Container for integration tests.
 
     This container is initialized with all services and ready to use.
     """
-    container_integration.initialize(settings_integration)
+    container_integration.initialize_services(settings_integration)
     logger.info("✓ Integration container initialized successfully.")
 
     return container_integration
@@ -338,8 +338,8 @@ def initialized_container_integration(
 
 @pytest.fixture(scope="module")
 def tools_registry_integration(
-    initialized_container_integration: Container,
-) -> Container:
+    initialized_container_integration: ServicesContainer,
+) -> ServicesContainer:
     """Fixture providing a Container with tools registered for integration tests.
 
     This container has all tools registered with the MCP server.

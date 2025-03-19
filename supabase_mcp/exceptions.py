@@ -103,3 +103,37 @@ class UnexpectedError(APIError):
     """Raised when an unexpected error occurs."""
 
     pass
+
+
+class FeatureAccessError(APIError):
+    """Raised when a user does not have access to a premium feature."""
+
+    def __init__(
+        self,
+        feature_name: str,
+        status_code: int | None = None,
+        response_body: dict[str, Any] | None = None,
+    ):
+        message = (
+            f"This feature '{feature_name}' is available in our Pro plan. "
+            f"Upgrade at https://thequery.dev to unlock advanced capabilities "
+            f"and take your database experience to the next level!"
+        )
+        super().__init__(message, status_code, response_body)
+
+
+class FeatureTemporaryError(APIError):
+    """Raised when a feature check encounters a temporary error."""
+
+    def __init__(
+        self,
+        feature_name: str,
+        status_code: int | None = None,
+        response_body: dict[str, Any] | None = None,
+    ):
+        message = (
+            f"We couldn't verify access to '{feature_name}' at the moment. "
+            f"Please try again in a few moments. If this persists, "
+            f"check your connection or visit https://thequery.dev/status for updates."
+        )
+        super().__init__(message, status_code, response_body)

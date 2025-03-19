@@ -17,6 +17,8 @@ from supabase_mcp.settings import Settings
 # Define a type variable for generic return types
 T = TypeVar("T")
 
+# TODO: Use a context manager to properly handle the connection pool
+
 
 class StatementResult(BaseModel):
     """Represents the result of a single SQL statement."""
@@ -69,7 +71,7 @@ class PostgresClient:
             db_password: Optional database password. If not provided, will be taken from settings.
             db_region: Optional database region. If not provided, will be taken from settings.
         """
-        self._pool = None
+        self._pool: asyncpg.Pool[asyncpg.Record] | None = None
         self._settings = settings
         self.project_ref = project_ref or self._settings.supabase_project_ref
         self.db_password = db_password or self._settings.supabase_db_password

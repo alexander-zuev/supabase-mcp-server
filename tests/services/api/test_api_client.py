@@ -1,8 +1,8 @@
 import httpx
 import pytest
 
+from supabase_mcp.clients.management_client import ManagementAPIClient
 from supabase_mcp.exceptions import APIClientError, APIConnectionError
-from supabase_mcp.services.api.api_client import ManagementAPIClient
 
 
 @pytest.mark.asyncio(loop_scope="module")
