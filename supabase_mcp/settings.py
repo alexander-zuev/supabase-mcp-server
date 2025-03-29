@@ -61,6 +61,8 @@ def find_config_file(env_file: str = ".env") -> str | None:
 class Settings(BaseSettings):
     """Initializes settings for Supabase MCP server."""
 
+    model_config = SettingsConfigDict(extra='allow')  # Allow extra fields
+
     supabase_project_ref: str = Field(
         default="127.0.0.1:54322",  # Local Supabase default
         description="Supabase project ref",
