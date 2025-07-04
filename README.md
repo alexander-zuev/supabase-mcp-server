@@ -571,3 +571,5 @@ For a more detailed roadmap, please see this [discussion](https://github.com/ale
 ---
 
 Enjoy! ☺️
+
+> Testing GitHub access integration - Claude Code
