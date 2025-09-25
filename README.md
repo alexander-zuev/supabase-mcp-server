@@ -27,11 +27,29 @@
 ## Table of contents
 
 <p class="center-text">
+  <a href="#quick-start">Quick Start</a> •
   <a href="#getting-started">Getting started</a> •
   <a href="#feature-overview">Feature overview</a> •
   <a href="#troubleshooting">Troubleshooting</a> •
   <a href="#changelog">Changelog</a>
 </p>
+
+## 🚀 Quick Start
+
+Get up and running in 3 minutes:
+
+1. **Install the server:**
+   ```bash
+   pipx install supabase-mcp-server
+   ```
+
+2. **Get your API key:** Visit [thequery.dev](https://thequery.dev) to get your free API key
+
+3. **Configure your MCP client:** Add the server to your preferred client (Cursor, Windsurf, Claude Desktop, or Cline) with your Supabase credentials
+
+4. **Start querying:** Ask your AI assistant to explore your database schema or execute SQL queries!
+
+> 💡 **Tip:** Start with safe read-only operations like `SELECT` queries, then enable unsafe mode for write operations when needed.
 
 ## ✨ Key features
 - 💻 Compatible with Cursor, Windsurf, Cline and other MCP clients supporting `stdio` protocol
