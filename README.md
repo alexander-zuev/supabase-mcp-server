@@ -570,4 +570,10 @@ For a more detailed roadmap, please see this [discussion](https://github.com/ale
 
 ---
 
+## Contributing
+
+Thanks for considering contributing to this project! While this repository is no longer actively maintained, contributions are still welcome. Please feel free to submit issues and pull requests.
+
+---
+
 Enjoy! ☺️
