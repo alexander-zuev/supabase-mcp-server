@@ -6,6 +6,7 @@
 > I've decided to no longer actively maintain this one. The official MCP server is as feature-rich, and many more
 > features will be added in the future. Check it out!
 
+> 🤖 **Demo Note**: This PR was created automatically using GitHub MCP server tools to demonstrate GitHub integration capabilities.
 
 <p class="center-text">
   <strong>Query MCP is an open-source MCP server that lets your IDE safely run SQL, manage schema changes, call the Supabase Management API, and use Auth Admin SDK — all with built-in safety controls.</strong>
