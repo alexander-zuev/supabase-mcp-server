@@ -577,3 +577,7 @@ Thanks for considering contributing to this project! While this repository is no
 ---
 
 Enjoy! ☺️
+
+---
+
+*Thank you to all contributors and users who made this project possible!* 🙏
