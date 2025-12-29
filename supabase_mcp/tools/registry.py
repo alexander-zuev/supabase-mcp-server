@@ -1,6 +1,7 @@
 from typing import Any, Literal
 
 from mcp.server.fastmcp import FastMCP
+from mcp.types import ToolAnnotations
 
 from supabase_mcp.core.container import ServicesContainer
 from supabase_mcp.services.database.postgres_client import QueryResult
@@ -22,19 +23,43 @@ class ToolRegistry:
         tool_manager = services_container.tool_manager
         feature_manager = services_container.feature_manager
 
-        @mcp.tool(description=tool_manager.get_description(ToolName.GET_SCHEMAS))  # type: ignore
+        @mcp.tool(
+            description=tool_manager.get_description(ToolName.GET_SCHEMAS),
+            annotations=ToolAnnotations(
+                title="Get Database Schemas",
+                readOnlyHint=True,
+                destructiveHint=False,
+                openWorldHint=True,
+            ),
+        )  # type: ignore
         async def get_schemas() -> QueryResult:
             """List all database schemas with their sizes and table counts."""
             return await feature_manager.execute_tool(ToolName.GET_SCHEMAS, services_container=services_container)
 
-        @mcp.tool(description=tool_manager.get_description(ToolName.GET_TABLES))  # type: ignore
+        @mcp.tool(
+            description=tool_manager.get_description(ToolName.GET_TABLES),
+            annotations=ToolAnnotations(
+                title="Get Tables in Schema",
+                readOnlyHint=True,
+                destructiveHint=False,
+                openWorldHint=True,
+            ),
+        )  # type: ignore
         async def get_tables(schema_name: str) -> QueryResult:
             """List all tables, foreign tables, and views in a schema with their sizes, row counts, and metadata."""
             return await feature_manager.execute_tool(
                 ToolName.GET_TABLES, services_container=services_container, schema_name=schema_name
             )
 
-        @mcp.tool(description=tool_manager.get_description(ToolName.GET_TABLE_SCHEMA))  # type: ignore
+        @mcp.tool(
+            description=tool_manager.get_description(ToolName.GET_TABLE_SCHEMA),
+            annotations=ToolAnnotations(
+                title="Get Table Schema",
+                readOnlyHint=True,
+                destructiveHint=False,
+                openWorldHint=True,
+            ),
+        )  # type: ignore
         async def get_table_schema(schema_name: str, table: str) -> QueryResult:
             """Get detailed table structure including columns, keys, and relationships."""
             return await feature_manager.execute_tool(
@@ -44,7 +69,15 @@ class ToolRegistry:
                 table=table,
             )
 
-        @mcp.tool(description=tool_manager.get_description(ToolName.EXECUTE_POSTGRESQL))  # type: ignore
+        @mcp.tool(
+            description=tool_manager.get_description(ToolName.EXECUTE_POSTGRESQL),
+            annotations=ToolAnnotations(
+                title="Execute PostgreSQL",
+                readOnlyHint=False,
+                destructiveHint=True,
+                openWorldHint=True,
+            ),
+        )  # type: ignore
         async def execute_postgresql(query: str, migration_name: str = "") -> QueryResult:
             """Execute PostgreSQL statements against your Supabase database."""
             return await feature_manager.execute_tool(
@@ -54,7 +87,15 @@ class ToolRegistry:
                 migration_name=migration_name,
             )
 
-        @mcp.tool(description=tool_manager.get_description(ToolName.RETRIEVE_MIGRATIONS))  # type: ignore
+        @mcp.tool(
+            description=tool_manager.get_description(ToolName.RETRIEVE_MIGRATIONS),
+            annotations=ToolAnnotations(
+                title="Retrieve Migrations",
+                readOnlyHint=True,
+                destructiveHint=False,
+                openWorldHint=True,
+            ),
+        )  # type: ignore
         async def retrieve_migrations(
             limit: int = 50,
             offset: int = 0,
@@ -76,7 +117,15 @@ class ToolRegistry:
             )
             return QueryResult.model_validate(result)
 
-        @mcp.tool(description=tool_manager.get_description(ToolName.SEND_MANAGEMENT_API_REQUEST))  # type: ignore
+        @mcp.tool(
+            description=tool_manager.get_description(ToolName.SEND_MANAGEMENT_API_REQUEST),
+            annotations=ToolAnnotations(
+                title="Send Management API Request",
+                readOnlyHint=False,
+                destructiveHint=True,
+                openWorldHint=True,
+            ),
+        )  # type: ignore
         async def send_management_api_request(
             method: str,
             path: str,
@@ -95,7 +144,15 @@ class ToolRegistry:
                 request_body=request_body,
             )
 
-        @mcp.tool(description=tool_manager.get_description(ToolName.GET_MANAGEMENT_API_SPEC))  # type: ignore
+        @mcp.tool(
+            description=tool_manager.get_description(ToolName.GET_MANAGEMENT_API_SPEC),
+            annotations=ToolAnnotations(
+                title="Get Management API Spec",
+                readOnlyHint=True,
+                destructiveHint=False,
+                openWorldHint=True,
+            ),
+        )  # type: ignore
         async def get_management_api_spec(params: dict[str, Any] = {}) -> dict[str, Any]:
             """Get the Supabase Management API specification.
 
@@ -119,21 +176,45 @@ class ToolRegistry:
                 ToolName.GET_MANAGEMENT_API_SPEC, services_container=services_container, params=params
             )
 
-        @mcp.tool(description=tool_manager.get_description(ToolName.GET_AUTH_ADMIN_METHODS_SPEC))  # type: ignore
+        @mcp.tool(
+            description=tool_manager.get_description(ToolName.GET_AUTH_ADMIN_METHODS_SPEC),
+            annotations=ToolAnnotations(
+                title="Get Auth Admin Methods Spec",
+                readOnlyHint=True,
+                destructiveHint=False,
+                openWorldHint=True,
+            ),
+        )  # type: ignore
         async def get_auth_admin_methods_spec() -> dict[str, Any]:
             """Get Python SDK methods specification for Auth Admin."""
             return await feature_manager.execute_tool(
                 ToolName.GET_AUTH_ADMIN_METHODS_SPEC, services_container=services_container
             )
 
-        @mcp.tool(description=tool_manager.get_description(ToolName.CALL_AUTH_ADMIN_METHOD))  # type: ignore
+        @mcp.tool(
+            description=tool_manager.get_description(ToolName.CALL_AUTH_ADMIN_METHOD),
+            annotations=ToolAnnotations(
+                title="Call Auth Admin Method",
+                readOnlyHint=False,
+                destructiveHint=True,
+                openWorldHint=True,
+            ),
+        )  # type: ignore
         async def call_auth_admin_method(method: str, params: dict[str, Any]) -> dict[str, Any]:
             """Call an Auth Admin method from Supabase Python SDK."""
             return await feature_manager.execute_tool(
                 ToolName.CALL_AUTH_ADMIN_METHOD, services_container=services_container, method=method, params=params
             )
 
-        @mcp.tool(description=tool_manager.get_description(ToolName.LIVE_DANGEROUSLY))  # type: ignore
+        @mcp.tool(
+            description=tool_manager.get_description(ToolName.LIVE_DANGEROUSLY),
+            annotations=ToolAnnotations(
+                title="Toggle Safety Mode",
+                readOnlyHint=False,
+                destructiveHint=True,
+                openWorldHint=True,
+            ),
+        )  # type: ignore
         async def live_dangerously(
             service: Literal["api", "database"], enable_unsafe_mode: bool = False
         ) -> dict[str, Any]:
@@ -151,7 +232,15 @@ class ToolRegistry:
                 enable_unsafe_mode=enable_unsafe_mode,
             )
 
-        @mcp.tool(description=tool_manager.get_description(ToolName.CONFIRM_DESTRUCTIVE_OPERATION))  # type: ignore
+        @mcp.tool(
+            description=tool_manager.get_description(ToolName.CONFIRM_DESTRUCTIVE_OPERATION),
+            annotations=ToolAnnotations(
+                title="Confirm Destructive Operation",
+                readOnlyHint=False,
+                destructiveHint=True,
+                openWorldHint=True,
+            ),
+        )  # type: ignore
         async def confirm_destructive_operation(
             operation_type: Literal["api", "database"], confirmation_id: str, user_confirmation: bool = False
         ) -> QueryResult | dict[str, Any]:
@@ -164,7 +253,15 @@ class ToolRegistry:
                 user_confirmation=user_confirmation,
             )
 
-        @mcp.tool(description=tool_manager.get_description(ToolName.RETRIEVE_LOGS))  # type: ignore
+        @mcp.tool(
+            description=tool_manager.get_description(ToolName.RETRIEVE_LOGS),
+            annotations=ToolAnnotations(
+                title="Retrieve Logs",
+                readOnlyHint=True,
+                destructiveHint=False,
+                openWorldHint=True,
+            ),
+        )  # type: ignore
         async def retrieve_logs(
             collection: str,
             limit: int = 20,
