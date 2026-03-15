@@ -1,0 +1,38 @@
+{
+  "name": "alexander-zuev/supabase-mcp-server",
+  "description": "Supabase MCP Server with support for SQL query execution and database exploration tools",
+  "accepts": [
+    {
+      "network": "eip155:8453",
+      "asset": "USDC",
+      "address": "YOUR_WALLET_ADDRESS"
+    }
+  ],
+  "resources": [
+    {
+      "path": "/execute_sql",
+      "price": "0.01",
+      "description": "Pay-per-call access to execute_sql"
+    },
+    {
+      "path": "/manage_project",
+      "price": "0.01",
+      "description": "Pay-per-call access to manage_project"
+    },
+    {
+      "path": "/auth_admin_user_management",
+      "price": "0.01",
+      "description": "Pay-per-call access to auth_admin_user_management"
+    },
+    {
+      "path": "/validate_sql_query",
+      "price": "0.01",
+      "description": "Pay-per-call access to validate_sql_query"
+    },
+    {
+      "path": "/get_schema_version",
+      "price": "0.01",
+      "description": "Pay-per-call access to get_schema_version"
+    }
+  ]
+}
