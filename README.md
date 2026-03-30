@@ -46,6 +46,10 @@
 - 📦 Dead-simple install & setup via package manager (uv, pipx, etc.)
 
 
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/alexanderzuev-supabase-mcp-server).
+
 ## Getting Started
 
 ### Prerequisites
